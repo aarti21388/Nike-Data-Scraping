@@ -5,6 +5,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import pandas as pd
+import time
 
 data=[]
 
@@ -12,9 +13,12 @@ def scrap_data(url,driver):
     
     #response=requests.get(url)
     driver.get(url)
+    driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+    time.sleep(3)  # Wait for 3 seconds after scrolling
+
     #wait until content load 
-    wait=WebDriverWait(driver,10)
-    element=wait.until(EC.presence_of_all_elements_located((By.CSS_SELECTOR,"#skip-to-products > div.product-card")))
+    # wait=WebDriverWait(driver,10)
+    # element=wait.until(EC.presence_of_all_elements_located((By.CSS_SELECTOR,"#skip-to-products > div.product-card")))
     soup=BeautifulSoup(driver.page_source,"html.parser")
     shoes=soup.select("#skip-to-products > div.product-card")
     
@@ -23,7 +27,13 @@ def scrap_data(url,driver):
         product__subname=shoe.find("div",class_="product-card__subtitle").text.strip()
         messaging=shoe.find("div",class_="product-card__messaging")
         link=shoe.find("a",class_="product-card__link-overlay")["href"]
-        product_price=shoe.find("div",class_="product-card__price-wrapper").text.strip()
+        discout=shoe.find("div",class_="product-price__perc")
+        
+        # if discout:
+        product_price=shoe.find("div",class_="is--current-price").text.strip()
+        # else:
+        #     product_price=shoe.find("div",class_="product-card__price-wrapper").text.strip()
+        
         colors=shoe.find("div",class_="product-card__product-count")
         
         if messaging is None:

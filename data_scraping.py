@@ -13,7 +13,7 @@ def scrap_data(url,worksheet):
         product__subname=shoe.find("div",class_="product-card__subtitle").text.strip()
         messaging=shoe.find("div",class_="product-card__messaging")
         link=shoe.find("a",class_="product-card__link-overlay")["href"]
-        product_price=shoe.find("div",class_="product-card__price-wrapper").text.strip()
+        product_price=shoe.find("div",class_="is--current-price").text.strip()
         colors=shoe.find("div",class_="product-card__product-count")
         
         if messaging is None:
